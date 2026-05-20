@@ -1242,8 +1242,12 @@
     <p class="modal-sub">Add a new stream VOD to the archive. Fill in the details below.</p>
    
     <div class="form-group">
-      <label class="form-label">duration <span style="color:var(--text3);font-size:10px;text-transform:none;letter-spacing:0">(в секундах, например 7200 = 2 часа)</span></label>
-      <input type="number" class="form-input" id="vodDuration" placeholder="7200">
+      <label class="form-label">duration</label>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+  <input type="number" class="form-input" id="vodDurH" placeholder="h" min="0">
+  <input type="number" class="form-input" id="vodDurM" placeholder="m" min="0" max="59">
+  <input type="number" class="form-input" id="vodDurS" placeholder="s" min="0" max="59">
+</div>
     </div>
    
     <div class="form-group">
@@ -1564,7 +1568,9 @@ function resetModal() {
   document.getElementById('progressFill').style.width = '0%';
   document.getElementById('vodUrl').value = '';
   document.getElementById('vodThumbnail').value = '';
-  document.getElementById('vodDuration').value = '';
+  document.getElementById('vodDurH').value = '';
+  document.getElementById('vodDurM').value = '';
+  document.getElementById('vodDurS').value = '';
   selectedFile = null;
 }
 
@@ -1626,7 +1632,7 @@ async function submitVod() {
     date: document.getElementById('vodDate').value,
     category: document.getElementById('vodCategory').value,
     tags: document.getElementById('vodTags').value,
-    duration: parseInt(document.getElementById('vodDuration').value) || 0,
+    duration: ((parseInt(document.getElementById('vodDurH').value)||0) * 3600) + ((parseInt(document.getElementById('vodDurM').value)||0) * 60) + (parseInt(document.getElementById('vodDurS').value)||0),
     views: 0,
     url: document.getElementById('vodUrl').value.trim(),
     thumbnail: document.getElementById('vodThumbnail').value.trim()
