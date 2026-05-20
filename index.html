@@ -1711,6 +1711,7 @@ async function deleteVod(id) {
 // ─── AUTH ─────────────────────────────────────────────────
 const AUTH_KEY = 'cutierover_auth';
 const PASS_KEY = 'cutierover_pass_hash';
+const HARDCODED_HASH = 'dd72a07c6d80e44b6a8513156f49219d65086f52f234b612d42914f42ff5f862';
 
 let isAdmin = false;
 
@@ -1740,7 +1741,7 @@ function setAdminMode(admin) {
 }
 
 function openAuthModal() {
-  const stored = localStorage.getItem(PASS_KEY);
+  const stored = HARDCODED_HASH;
   const hint = document.getElementById('authHint');
   const sub = document.getElementById('authSubText');
   if (!stored) {
@@ -1764,7 +1765,7 @@ async function submitAuth() {
   const pw = document.getElementById('authPassword').value;
   if (!pw) return;
   const hash = await sha256(pw);
-  const stored = localStorage.getItem(PASS_KEY);
+  const stored = HARDCODED_HASH;
 
   if (!stored) {
     // First time — set password
