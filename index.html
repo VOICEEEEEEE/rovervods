@@ -1078,6 +1078,181 @@
   .vod-card:nth-child(7) { animation-delay: 0.35s; }
   .vod-card:nth-child(8) { animation-delay: 0.40s; }
   .vod-card:nth-child(9) { animation-delay: 0.45s; }
+ .about-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+ 
+.about-container {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 2rem;
+}
+ 
+.about-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 1.5rem;
+}
+ 
+.about-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(192,132,252,0.15);
+  border: 1px solid rgba(192,132,252,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 500;
+  color: #c084fc;
+  flex-shrink: 0;
+}
+ 
+.about-name h2 {
+  margin: 0 0 2px;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text, #f0eef8);
+}
+ 
+.about-name p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text2, #9c98b4);
+}
+ 
+.about-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-style: normal;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.07);
+  color: var(--text2, #9c98b4);
+  margin-left: 6px;
+  vertical-align: middle;
+}
+ 
+.about-bio {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--text2, #9c98b4);
+  margin: 0 0 2rem;
+}
+ 
+.about-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  margin-bottom: 2rem;
+}
+ 
+.about-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+}
+ 
+.about-card-label {
+  font-size: 11px;
+  color: var(--text2, #9c98b4);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+ 
+.about-card-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text, #f0eef8);
+}
+ 
+.about-tag {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: rgba(255,255,255,0.07);
+  color: var(--text2, #9c98b4);
+  margin: 2px 2px 0 0;
+  font-weight: 400;
+}
+ 
+.about-divider {
+  border-top: 1px solid rgba(255,255,255,0.07);
+  margin: 1.5rem 0;
+}
+ 
+.about-section-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text2, #9c98b4);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+ 
+.about-specs {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 0.25rem 1rem;
+  margin-bottom: 1.5rem;
+}
+ 
+.about-spec-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+ 
+.about-spec-row:last-child {
+  border-bottom: none;
+}
+ 
+.about-spec-key {
+  font-size: 13px;
+  color: var(--text2, #9c98b4);
+}
+ 
+.about-spec-val {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text, #f0eef8);
+  text-align: right;
+}
+ 
+.about-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+ 
+.about-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text, #f0eef8);
+  text-decoration: none;
+  background: rgba(255,255,255,0.04);
+  transition: background 0.2s;
+}
+ 
+.about-link-btn:hover {
+  background: rgba(255,255,255,0.09);
+}
 </style>
 </head>
 <body>
@@ -1096,6 +1271,7 @@
 
     <nav>
       <a href="#" class="active">vods</a>
+      <a href="#about" class="nav-link">о стримере</a>
     </nav>
 
       <div class="header-right">
@@ -1845,5 +2021,98 @@ async function init() {
 
 init();
 </script>
+ <section id="about" class="about-section">
+  <div class="about-container">
+ 
+    <div class="about-header">
+      <div class="about-avatar">КР</div>
+      <div class="about-name">
+        <h2>cutie<em>rover</em> <span class="about-badge">Katherine</span></h2>
+        <p>Екатерина Репьёва · стримерша на Twitch</p>
+      </div>
+    </div>
+ 
+    <p class="about-bio">
+      Русскоязычная стримерша с аудиторией более 220 тысяч подписчиков.
+      В прошлом выступала за женский состав <strong>Virtus.pro</strong> в киберспорте,
+      где запомнилась как сильный снайпер. В эфирах — уютная атмосфера,
+      просмотры фильмов, IRL-контент с буткемпов и поездок, а также игра
+      на серверах Majestic RP.
+    </p>
+ 
+    <div class="about-cards">
+      <div class="about-card">
+        <div class="about-card-label">Подписчики</div>
+        <div class="about-card-value">220 000+</div>
+      </div>
+      <div class="about-card">
+        <div class="about-card-label">Категории</div>
+        <div class="about-card-value">
+          <span class="about-tag">Just Chatting</span>
+          <span class="about-tag">Gaming</span>
+          <span class="about-tag">IRL</span>
+          <span class="about-tag">Film</span>
+        </div>
+      </div>
+      <div class="about-card">
+        <div class="about-card-label">Киберспорт</div>
+        <div class="about-card-value">Virtus.pro</div>
+      </div>
+      <div class="about-card">
+        <div class="about-card-label">IRL-контент</div>
+        <div class="about-card-value">Сочи, буткемпы, поездки</div>
+      </div>
+    </div>
+ 
+    <div class="about-divider"></div>
+ 
+    <div class="about-section-label">Сетап</div>
+    <div class="about-specs">
+      <div class="about-spec-row">
+        <span class="about-spec-key">Процессор</span>
+        <span class="about-spec-val">Ryzen 7 7800X3D</span>
+      </div>
+      <div class="about-spec-row">
+        <span class="about-spec-key">Видеокарта</span>
+        <span class="about-spec-val">GIGABYTE RTX 4070 SUPER</span>
+      </div>
+      <div class="about-spec-row">
+        <span class="about-spec-key">Мышка</span>
+        <span class="about-spec-val">WLMOUSE Sword X</span>
+      </div>
+      <div class="about-spec-row">
+        <span class="about-spec-key">Наушники</span>
+        <span class="about-spec-val">Logitech PRO X 2</span>
+      </div>
+      <div class="about-spec-row">
+        <span class="about-spec-key">Клавиатура</span>
+        <span class="about-spec-val">Cidoo QK61</span>
+      </div>
+      <div class="about-spec-row">
+        <span class="about-spec-key">Монитор</span>
+        <span class="about-spec-val">Samsung Odyssey 500Hz</span>
+      </div>
+      <div class="about-spec-row">
+        <span class="about-spec-key">Микрофон</span>
+        <span class="about-spec-val">Neumann TLM 103</span>
+      </div>
+      <div class="about-spec-row">
+        <span class="about-spec-key">Камера</span>
+        <span class="about-spec-val">Sony ZV-E10 II + Tamron 11-20mm</span>
+      </div>
+    </div>
+ 
+    <div class="about-divider"></div>
+ 
+    <div class="about-section-label">Найти в сети</div>
+    <div class="about-links">
+      <a href="https://twitch.tv/cutierover" target="_blank" class="about-link-btn">Twitch</a>
+      <a href="https://instagram.com/ne.cutierover" target="_blank" class="about-link-btn">Instagram</a>
+      <a href="https://t.me/cutierover" target="_blank" class="about-link-btn">Telegram</a>
+      <a href="https://t.me/ctrvr" target="_blank" class="about-link-btn">Спам-канал</a>
+    </div>
+ 
+  </div>
+</section>
 </body>
 </html>
