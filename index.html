@@ -1502,7 +1502,6 @@ function renderGrid() {
 function updateStats() {
   document.getElementById('statVods').textContent = vods.length;
   const totalSecs = vods.reduce((a, v) => a + (v.duration || 0), 0);
-  document.getElementById('statHours').textContent = Math.round(totalSecs / 3600);
   const totalViews = vods.reduce((a, v) => a + (v.views || 0), 0);
   document.getElementById('statViews').textContent = formatViews(totalViews);
   const filtered = getFilteredSorted();
