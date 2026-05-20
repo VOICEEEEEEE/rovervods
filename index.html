@@ -1240,7 +1240,12 @@
 
     <h2 class="modal-title">upload recording</h2>
     <p class="modal-sub">Add a new stream VOD to the archive. Fill in the details below.</p>
-
+   
+    <div class="form-group">
+      <label class="form-label">duration <span style="color:var(--text3);font-size:10px;text-transform:none;letter-spacing:0">(в секундах, например 7200 = 2 часа)</span></label>
+      <input type="number" class="form-input" id="vodDuration" placeholder="7200">
+    </div>
+   
     <div class="form-group">
       <label class="form-label">stream title</label>
       <input type="text" class="form-input" id="vodTitle" placeholder="e.g. cozy minecraft stream ✦">
@@ -1559,6 +1564,7 @@ function resetModal() {
   document.getElementById('progressFill').style.width = '0%';
   document.getElementById('vodUrl').value = '';
   document.getElementById('vodThumbnail').value = '';
+  document.getElementById('vodDuration').value = '';
   selectedFile = null;
 }
 
@@ -1620,7 +1626,7 @@ async function submitVod() {
     date: document.getElementById('vodDate').value,
     category: document.getElementById('vodCategory').value,
     tags: document.getElementById('vodTags').value,
-    duration: selectedFile ? Math.floor(Math.random() * 14400 + 3600) : 0,
+    duration: parseInt(document.getElementById('vodDuration').value) || 0,
     views: 0,
     url: document.getElementById('vodUrl').value.trim(),
     thumbnail: document.getElementById('vodThumbnail').value.trim()
