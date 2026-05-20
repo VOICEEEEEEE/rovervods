@@ -1163,6 +1163,7 @@
     <span class="chip" onclick="filterByTag('gaming', this)">gaming</span>
     <span class="chip" onclick="filterByTag('irl', this)">irl</span>
     <span class="chip" onclick="filterByTag('just chatting', this)">just chatting</span>
+    <span class="chip" onclick="filterByTag('variety', this)">variety</span>
   </div>
   <div class="filter-sep"></div>
   <select class="sort-select" onchange="sortCards(this.value)">
@@ -1263,6 +1264,7 @@
           <option value="gaming">gaming</option>
           <option value="just chatting">just chatting</option>
           <option value="irl">irl</option>
+          <option value="variety">variety</option>
         </select>
       </div>
     </div>
@@ -1275,6 +1277,10 @@
     <div class="form-group">
       <label class="form-label">video url <span style="color:var(--text3);font-size:10px;text-transform:none;letter-spacing:0">(Google Drive, archive.org, direct link)</span></label>
       <input type="text" class="form-input" id="vodUrl" placeholder="https://archive.org/download/... or Google Drive link">
+    </div>
+    <div class="form-group">
+      <label class="form-label">thumbnail <span style="color:var(--text3);font-size:10px;text-transform:none;letter-spacing:0">(необязательно — ссылка на картинку)</span></label>
+      <input type="text" class="form-input" id="vodThumbnail" placeholder="https://i.imgur.com/... или ссылка из Discord">
     </div>
     <button class="form-submit" onclick="submitVod()">publish recording</button>
 
@@ -1293,8 +1299,8 @@
 <script>
 // ─── SUPABASE CONFIG ──────────────────────────────────────
 // Замени эти два значения своими из Supabase → Project Settings → API
-const SUPABASE_URL = 'https://xlthawdoooosskuluumy.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsdGhhd2Rvb29vc3NrdWx1dW15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNTgxNDcsImV4cCI6MjA5NDgzNDE0N30.qKR9VApdkJfQxJliRJVE4p8bvIrvDTT06Q4EFvnEtsM';
+const SUPABASE_URL = 'ТВОЙ_SUPABASE_URL';
+const SUPABASE_KEY = 'ТВОЙ_ANON_KEY';
 
 async function sbFetch(path, options = {}) {
   const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
@@ -1391,20 +1397,32 @@ function makeCard(vod, idx) {
     : '';
 
   const tagHtml = [
-    vod.category ? `<span class="tag tag-game">${vod.category}</span>` : '',
-    ...tags.slice(0,2).map(t => `<span class="tag">${t}</span>`)
+    vod.category ? `<span class="tag tag-game" onclick="event.stopPropagation();filterByTagName('${vod.category}')" style="cursor:pointer">${vod.category}</span>` : '',
+    ...tags.slice(0,2).map(t => `<span class="tag" onclick="event.stopPropagation();filterByTagName('${t.toLowerCase()}')" style="cursor:pointer">${t}</span>`)
   ].join('');
+
+  // Цвета заглушки по категории
+  const categoryColors = {
+    'gaming':       ['#1a0a2e', '#2d1060', '#7c3aed'],
+    'just chatting':['#0a1a2e', '#102040', '#3b82f6'],
+    'irl':          ['#1a0a1a', '#2d1040', '#db2777'],
+    'variety':      ['#0a1a0a', '#102010', '#16a34a'],
+  };
+  const colors = categoryColors[(vod.category||'').toLowerCase()] || ['#0f0818', '#1a1025', '#7c3aed'];
+  const initials = (vod.title || '?').split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase();
+
+  const thumbInner = vod.thumbnail
+    ? `<img src="${vod.thumbnail}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+    + `<div class="vod-thumb-inner" style="display:none;background:linear-gradient(135deg,${colors[0]} 0%,${colors[1]} 60%,${colors[2]}22 100%);"><div class="thumb-pattern"></div><div style="font-family:var(--font-serif);font-size:28px;color:${colors[2]};opacity:0.6;z-index:1">${initials}</div></div>`
+    : `<div class="vod-thumb-inner" style="background:linear-gradient(135deg,${colors[0]} 0%,${colors[1]} 60%,${colors[2]}22 100%);">
+        <div class="thumb-pattern"></div>
+        <div style="font-family:var(--font-serif);font-size:28px;color:${colors[2]};opacity:0.6;z-index:1">${initials}</div>
+       </div>`;
 
   return `
   <div class="vod-card" data-id="${vod.id}" data-category="${vod.category || ''}" data-date="${vod.date || ''}" data-views="${vod.views || 0}" data-duration="${vod.duration || 0}" data-title="${(vod.title || '').toLowerCase()}" style="animation-delay:${idx * 0.05}s">
     <div class="vod-thumb">
-      <div class="vod-thumb-inner">
-        ${vod.thumbnail ? `<img src="${vod.thumbnail}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" onerror="this.style.display='none'">` : ''}
-        <div class="thumb-pattern"></div>
-        <div class="thumb-icon">
-          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
-        </div>
-      </div>
+      ${thumbInner}
       ${badge}
       <span class="vod-duration">${formatDuration(vod.duration)}</span>
     </div>
@@ -1436,7 +1454,11 @@ function makeCard(vod, idx) {
 function getFilteredSorted() {
   let filtered = [...vods];
   if (currentFilter !== 'all') {
-    filtered = filtered.filter(v => (v.category || '').toLowerCase() === currentFilter);
+    filtered = filtered.filter(v => {
+      const cat = (v.category || '').toLowerCase();
+      const tags = (v.tags || '').split(',').map(t => t.trim().toLowerCase());
+      return cat === currentFilter || tags.includes(currentFilter);
+    });
   }
   if (searchQuery) {
     const q = searchQuery.toLowerCase();
@@ -1499,6 +1521,16 @@ function filterByTag(tag, el) {
   renderGrid();
 }
 
+function filterByTagName(tag) {
+  currentFilter = tag.toLowerCase();
+  // Снимаем активный чип со всех и ставим на совпадающий если есть
+  document.querySelectorAll('.chip').forEach(c => {
+    c.classList.remove('active');
+    if (c.textContent.trim().toLowerCase() === currentFilter) c.classList.add('active');
+  });
+  renderGrid();
+}
+
 function sortCards(val) {
   currentSort = val;
   renderGrid();
@@ -1533,6 +1565,7 @@ function resetModal() {
   document.getElementById('uploadProgress').classList.remove('show');
   document.getElementById('progressFill').style.width = '0%';
   document.getElementById('vodUrl').value = '';
+  document.getElementById('vodThumbnail').value = '';
   selectedFile = null;
 }
 
@@ -1597,7 +1630,7 @@ async function submitVod() {
     duration: selectedFile ? Math.floor(Math.random() * 14400 + 3600) : 0,
     views: 0,
     url: document.getElementById('vodUrl').value.trim(),
-    thumbnail: ''
+    thumbnail: document.getElementById('vodThumbnail').value.trim()
   };
 
   try {
@@ -1711,7 +1744,6 @@ async function deleteVod(id) {
 // ─── AUTH ─────────────────────────────────────────────────
 const AUTH_KEY = 'cutierover_auth';
 const PASS_KEY = 'cutierover_pass_hash';
-const HARDCODED_HASH = 'dd72a07c6d80e44b6a8513156f49219d65086f52f234b612d42914f42ff5f862';
 
 let isAdmin = false;
 
@@ -1741,7 +1773,7 @@ function setAdminMode(admin) {
 }
 
 function openAuthModal() {
-  const stored = HARDCODED_HASH;
+  const stored = localStorage.getItem(PASS_KEY);
   const hint = document.getElementById('authHint');
   const sub = document.getElementById('authSubText');
   if (!stored) {
@@ -1765,7 +1797,7 @@ async function submitAuth() {
   const pw = document.getElementById('authPassword').value;
   if (!pw) return;
   const hash = await sha256(pw);
-  const stored = HARDCODED_HASH;
+  const stored = localStorage.getItem(PASS_KEY);
 
   if (!stored) {
     // First time — set password
