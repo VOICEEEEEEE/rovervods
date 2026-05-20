@@ -1151,6 +1151,10 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>
         watch live on twitch
       </a>
+     <a href="https://t.me/cutievods" target="_blank" class="twitch-link" style="background:rgba(0,136,204,0.15);border-color:rgba(0,136,204,0.3);color:#60b8e0;margin-left:8px;">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
+  VODs in telegram
+</a>
     </div>
   </div>
 </section>
@@ -1264,7 +1268,7 @@
           <option value="gaming">gaming</option>
           <option value="just chatting">just chatting</option>
           <option value="irl">irl</option>
-          <option value="variety">variety</option>
+          <option value="film">film</option>
         </select>
       </div>
     </div>
@@ -1299,8 +1303,8 @@
 <script>
 // ─── SUPABASE CONFIG ──────────────────────────────────────
 // Замени эти два значения своими из Supabase → Project Settings → API
-const SUPABASE_URL = 'ТВОЙ_SUPABASE_URL';
-const SUPABASE_KEY = 'ТВОЙ_ANON_KEY';
+const SUPABASE_URL = 'https://xlthawdoooosskuluumy.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsdGhhd2Rvb29vc3NrdWx1dW15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNTgxNDcsImV4cCI6MjA5NDgzNDE0N30.qKR9VApdkJfQxJliRJVE4p8bvIrvDTT06Q4EFvnEtsM';
 
 async function sbFetch(path, options = {}) {
   const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
@@ -1744,6 +1748,7 @@ async function deleteVod(id) {
 // ─── AUTH ─────────────────────────────────────────────────
 const AUTH_KEY = 'cutierover_auth';
 const PASS_KEY = 'cutierover_pass_hash';
+const HARDCODED_HASH = 'dd72a07c6d80e44b6a8513156f49219d65086f52f234b612d42914f42ff5f862';
 
 let isAdmin = false;
 
@@ -1773,7 +1778,7 @@ function setAdminMode(admin) {
 }
 
 function openAuthModal() {
-  const stored = localStorage.getItem(PASS_KEY);
+  const stored = HARDCODED_HASH;
   const hint = document.getElementById('authHint');
   const sub = document.getElementById('authSubText');
   if (!stored) {
@@ -1797,7 +1802,7 @@ async function submitAuth() {
   const pw = document.getElementById('authPassword').value;
   if (!pw) return;
   const hash = await sha256(pw);
-  const stored = localStorage.getItem(PASS_KEY);
+  const stored = HARDCODED_HASH;
 
   if (!stored) {
     // First time — set password
