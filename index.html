@@ -1393,12 +1393,12 @@
 <div class="auth-modal-overlay" id="authOverlay">
   <div class="auth-modal">
     <div class="auth-title">admin login</div>
-    <div class="auth-sub" id="authSubText">enter password to manage recordings</div>
+    <div class="auth-sub" id="authSubText">enter your credentials</div>
+    <input type="email" class="form-input" id="authEmail" placeholder="email" style="width:100%;margin-bottom:10px" onkeydown="if(event.key==='Enter')submitAuth()">
     <input type="password" class="form-input" id="authPassword" placeholder="password" style="width:100%" onkeydown="if(event.key==='Enter')submitAuth()">
     <div class="auth-error" id="authError"></div>
     <button class="auth-btn" onclick="submitAuth()">sign in</button>
     <button class="auth-btn" onclick="closeAuthModal()" style="background:var(--bg4);margin-top:8px;">cancel</button>
-    <div class="auth-hint" id="authHint"></div>
   </div>
 </div>
 
@@ -1476,10 +1476,11 @@ const SUPABASE_URL = 'https://xlthawdoooosskuluumy.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsdGhhd2Rvb29vc3NrdWx1dW15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNTgxNDcsImV4cCI6MjA5NDgzNDE0N30.qKR9VApdkJfQxJliRJVE4p8bvIrvDTT06Q4EFvnEtsM';
 
 async function sbFetch(path, options = {}) {
+  const token = (supabaseSession && supabaseSession.access_token) ? supabaseSession.access_token : SUPABASE_KEY;
   const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
     headers: {
       'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Authorization': 'Bearer ' + token,
       'Content-Type': 'application/json',
       'Prefer': options.prefer || 'return=representation',
       ...options.headers
@@ -1917,22 +1918,41 @@ async function deleteVod(id) {
 }
 
 // ─── AUTH ─────────────────────────────────────────────────
-const AUTH_KEY = 'cutierover_auth';
-const PASS_KEY = 'cutierover_pass_hash';
-const HARDCODED_HASH = 'dd72a07c6d80e44b6a8513156f49219d65086f52f234b612d42914f42ff5f862';
-
 let isAdmin = false;
+let supabaseSession = null;
 
-async function sha256(str) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+async function signIn(email, password) {
+  const res = await fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ email, password })
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error_description || data.msg || 'login failed');
+  return data;
+}
+
+async function signOut() {
+  if (!supabaseSession) return;
+  await fetch(SUPABASE_URL + '/auth/v1/logout', {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + supabaseSession.access_token
+    }
+  });
+  supabaseSession = null;
+  sessionStorage.removeItem('cutierover_session');
 }
 
 async function initAuth() {
-  // Check if session is still valid (24h)
   try {
-    const session = JSON.parse(sessionStorage.getItem(AUTH_KEY));
-    if (session && session.expires > Date.now()) {
+    const saved = JSON.parse(sessionStorage.getItem('cutierover_session'));
+    if (saved && saved.expires_at > Date.now() / 1000) {
+      supabaseSession = saved;
       setAdminMode(true);
       return;
     }
@@ -1949,20 +1969,11 @@ function setAdminMode(admin) {
 }
 
 function openAuthModal() {
-  const stored = HARDCODED_HASH;
-  const hint = document.getElementById('authHint');
-  const sub = document.getElementById('authSubText');
-  if (!stored) {
-    sub.textContent = 'first time? set your admin password';
-    hint.textContent = 'this password will be saved as a hash — keep it safe, it cannot be recovered';
-  } else {
-    sub.textContent = 'enter password to manage recordings';
-    hint.textContent = '';
-  }
   document.getElementById('authError').textContent = '';
+  document.getElementById('authEmail').value = '';
   document.getElementById('authPassword').value = '';
   document.getElementById('authOverlay').classList.add('open');
-  setTimeout(() => document.getElementById('authPassword').focus(), 50);
+  setTimeout(() => document.getElementById('authEmail').focus(), 50);
 }
 
 function closeAuthModal() {
@@ -1970,33 +1981,32 @@ function closeAuthModal() {
 }
 
 async function submitAuth() {
+  const email = document.getElementById('authEmail').value.trim();
   const pw = document.getElementById('authPassword').value;
-  if (!pw) return;
-  const hash = await sha256(pw);
-  const stored = HARDCODED_HASH;
+  if (!email || !pw) return;
 
-  if (!stored) {
-    // First time — set password
-    localStorage.setItem(PASS_KEY, hash);
-    sessionStorage.setItem(AUTH_KEY, JSON.stringify({ expires: Date.now() + 86400000 }));
+  const btn = document.querySelector('#authOverlay .auth-btn');
+  btn.textContent = 'signing in…';
+  btn.disabled = true;
+
+  try {
+    const session = await signIn(email, pw);
+    supabaseSession = session;
+    sessionStorage.setItem('cutierover_session', JSON.stringify(session));
     closeAuthModal();
     setAdminMode(true);
-    return;
-  }
-
-  if (hash === stored) {
-    sessionStorage.setItem(AUTH_KEY, JSON.stringify({ expires: Date.now() + 86400000 }));
-    closeAuthModal();
-    setAdminMode(true);
-  } else {
-    document.getElementById('authError').textContent = 'wrong password';
+  } catch(e) {
+    document.getElementById('authError').textContent = 'wrong email or password';
     document.getElementById('authPassword').value = '';
     document.getElementById('authPassword').focus();
+  } finally {
+    btn.textContent = 'sign in';
+    btn.disabled = false;
   }
 }
 
-function logoutAdmin() {
-  sessionStorage.removeItem(AUTH_KEY);
+async function logoutAdmin() {
+  await signOut();
   setAdminMode(false);
 }
 
