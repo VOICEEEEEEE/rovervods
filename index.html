@@ -963,18 +963,84 @@
 
   /* Responsive */
   @media (max-width: 768px) {
-    .hero-profile { flex-direction: column; align-items: flex-start; gap: 16px; }
-    h1 { font-size: 2.2rem; }
-    .hero-stats { gap: 20px; }
-    .video-grid { grid-template-columns: 1fr; }
+    /* Header */
+    .header-inner { padding: 0 16px; gap: 8px; }
+    .header-logo { font-size: 15px; }
+    .header-logo img, .header-logo .avatar-small { width: 28px; height: 28px; }
     nav { display: none; }
-    .filters-bar { flex-wrap: wrap; }
+    .header-right { gap: 6px; }
+    .search-bar { width: 130px; }
+    .search-bar input { font-size: 12px; }
+    .upload-btn { font-size: 11px; padding: 6px 10px; }
+    .admin-badge { font-size: 10px; padding: 4px 8px; }
+    #loginBtn { font-size: 11px; padding: 6px 10px; }
+
+    /* Hero */
+    .hero { padding: 40px 16px 32px; }
+    .hero-profile { flex-direction: column; align-items: flex-start; gap: 16px; }
+    h1 { font-size: 2rem; }
+    .hero-desc { font-size: 13px; }
+    .hero-stats { gap: 20px; }
+    .stat-num { font-size: 1.6rem; }
+
+    /* Twitch + Telegram buttons — в ряд на мобилке */
+    .hero-info > div:has(.twitch-link),
+    .twitch-link { display: inline-flex; }
+    .twitch-link { font-size: 12px; padding: 8px 12px; margin-left: 0 !important; margin-top: 0; }
+    .hero-info { display: flex; flex-direction: column; gap: 16px; }
+    .hero-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    /* Filters */
+    .filters-bar { padding: 12px 16px; gap: 8px; flex-wrap: wrap; }
+    .filter-chips { gap: 6px; flex-wrap: wrap; }
+    .chip { font-size: 11px; padding: 5px 12px; }
+    .filter-label { font-size: 10px; }
+    select { font-size: 12px; padding: 5px 10px; }
+
+    /* Grid — одна колонка */
+    .vod-grid, .video-grid { grid-template-columns: 1fr; gap: 12px; padding: 0 16px 16px; }
+    .vod-card { border-radius: 12px; }
+    .vod-thumb { height: 180px; }
+
+    /* Section header */
+    .section-header { padding: 16px 16px 12px; }
+    .section-title { font-size: 1.4rem; }
+
+    /* About page */
+    .about-section { padding: 24px 16px; }
+    .about-container { padding: 20px 16px; border-radius: 14px; }
+    .about-header { flex-direction: column; gap: 12px; }
+    .about-avatar { width: 56px; height: 56px; }
+    .about-name h2 { font-size: 18px; }
+    .about-cards { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .about-card { padding: 12px; }
+    .about-links { gap: 8px; }
+    .about-link-btn { font-size: 12px; padding: 7px 12px; }
+
+    /* Player modal */
+    .player-modal { padding: 12px; border-radius: 12px; }
+    .player-header { margin-bottom: 10px; }
+    .player-title { font-size: 15px; }
+
+    /* Upload modal */
+    .modal-content { padding: 20px 16px; border-radius: 14px; margin: 10px; }
     .form-row { grid-template-columns: 1fr; }
-    footer { flex-direction: column; gap: 8px; text-align: center; }
+    .modal-title { font-size: 18px; }
+
+    /* Auth modal */
+    .auth-modal { padding: 24px 16px; border-radius: 14px; margin: 16px; }
+    .auth-title { font-size: 18px; }
+
+    /* Footer */
+    footer { flex-direction: column; gap: 8px; text-align: center; padding: 20px 16px; }
   }
 
-  /* Fade-in animation for cards */
-  .vod-card {
+  .hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+  }
     animation: card-in 0.4s ease both;
   }
 
@@ -1319,14 +1385,16 @@
           <span class="stat-label">views</span>
         </div>
       </div>
-      <a href="https://twitch.tv/cutierover" target="_blank" class="twitch-link">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>
-        watch live on twitch
-      </a>
-     <a href="https://t.me/cutievods" target="_blank" class="twitch-link" style="background:rgba(0,136,204,0.15);border-color:rgba(0,136,204,0.3);color:#60b8e0;margin-left:8px;" onmouseover="this.style.background='rgba(0,136,204,0.3)'" onmouseout="this.style.background='rgba(0,136,204,0.15)'">
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
-  VODs in telegram
-</a>
+      <div class="hero-buttons">
+        <a href="https://twitch.tv/cutierover" target="_blank" class="twitch-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>
+          watch live on twitch
+        </a>
+        <a href="https://t.me/cutievods" target="_blank" class="twitch-link" style="background:rgba(0,136,204,0.15);border-color:rgba(0,136,204,0.3);color:#60b8e0;" onmouseover="this.style.background='rgba(0,136,204,0.3)'" onmouseout="this.style.background='rgba(0,136,204,0.15)'">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
+          VODs in telegram
+        </a>
+      </div>
     </div>
   </div>
 </section>
