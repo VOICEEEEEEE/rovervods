@@ -1727,7 +1727,8 @@ function renderGrid() {
   const filtered = getFilteredSorted();
 
   // Remove existing cards
-  grid.innerHTML = '';
+  grid.querySelectorAll('.vod-card').forEach(c => c.remove());
+grid.querySelectorAll('#loadMoreBtn').forEach(c => c.parentNode && c.parentNode.remove());
 
   if (filtered.length === 0) {
     empty.classList.add('show');
