@@ -1323,6 +1323,128 @@
 .about-link-btn:hover {
   background: rgba(255,255,255,0.09);
 }
+ .support-btn {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s;
+}
+.support-btn:hover { background: rgba(255,255,255,0.09); transform: scale(1.08); }
+.support-btn:active { transform: scale(0.96); }
+.support-btn svg { width: 22px; height: 22px; fill: none; stroke: #d4537e; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+ 
+.support-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+.support-overlay.open { display: flex; }
+ 
+.support-modal {
+  background: var(--bg2, #111118);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  width: 340px;
+  max-width: 90vw;
+  position: relative;
+}
+ 
+.support-modal-close {
+  position: absolute;
+  top: 12px; right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text2, #9c98b4);
+  font-size: 20px;
+  line-height: 1;
+  padding: 4px;
+}
+.support-modal-close:hover { color: var(--text, #f0eef8); }
+ 
+.support-modal-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text, #f0eef8);
+  margin: 0 0 4px;
+}
+.support-modal-sub {
+  font-size: 13px;
+  color: var(--text2, #9c98b4);
+  margin: 0 0 1.25rem;
+}
+ 
+.support-da-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.05);
+  color: var(--text, #f0eef8);
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+.support-da-btn:hover { background: rgba(255,255,255,0.09); }
+ 
+.support-method {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+}
+.support-method-label {
+  font-size: 11px;
+  color: var(--text3, #5e5c72);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+.support-method-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.support-method-val {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text, #f0eef8);
+  word-break: break-all;
+  flex: 1;
+}
+.support-copy-btn {
+  flex-shrink: 0;
+  background: none;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--text2, #9c98b4);
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.support-copy-btn:hover { background: rgba(255,255,255,0.07); }
 </style>
 </head>
 <body>
@@ -1398,6 +1520,36 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
           VODs in telegram
         </a>
+       <button class="support-btn" onclick="document.getElementById('supportOverlay').classList.add('open')" aria-label="Поддержать стримера">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+  </svg>
+</button>
+ 
+<!-- Модальное окно -->
+<div class="support-overlay" id="supportOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="support-modal">
+    <button class="support-modal-close" onclick="document.getElementById('supportOverlay').classList.remove('open')">×</button>
+    <p class="support-modal-title">поддержать ♡</p>
+    <p class="support-modal-sub">выбери удобный способ</p>
+ 
+    <a class="support-da-btn" href="https://www.donationalerts.com/r/voicecoretm" target="_blank">
+      donation alerts
+    </a>
+ 
+    <div class="support-method">
+      <div class="support-method-label">USDT TRC-20</div>
+      <div class="support-method-row">
+        <span class="support-method-val">TS9YcNXxWcJ5tMU8KRm2t8GvvHdv1FiorG</span>
+        <button class="support-copy-btn" onclick="
+          navigator.clipboard.writeText('TS9YcNXxWcJ5tMU8KRm2t8GvvHdv1FiorG');
+          this.textContent='скопировано ✓';
+          setTimeout(()=>this.textContent='копировать',2000)
+        ">копировать</button>
+      </div>
+    </div>
+  </div>
+</div>
       </div>
     </div>
   </div>
