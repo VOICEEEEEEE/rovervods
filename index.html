@@ -1447,15 +1447,24 @@
 
 <!-- VIDEO PLAYER MODAL -->
 <div class="modal-overlay" id="playerOverlay" onclick="handlePlayerOverlayClick(event)">
-  <div class="modal" style="max-width:800px;padding:20px;">
+  <div class="modal" style="max-width:1100px;padding:20px;width:95vw;">
     <button class="modal-close" onclick="closePlayer()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
     <h2 class="modal-title" id="playerTitle" style="margin-bottom:16px;font-size:18px;padding-right:32px;"></h2>
-    <div id="playerContainer" style="width:100%;border-radius:10px;overflow:hidden;background:#000;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;">
-      <video id="videoPlayer" controls style="width:100%;height:100%;display:none;" preload="metadata"></video>
-      <iframe id="iframePlayer" style="width:100%;height:100%;border:none;display:none;" allowfullscreen allow="autoplay"></iframe>
-      <div id="playerMsg" style="color:var(--text2);font-size:14px;text-align:center;padding:20px;display:none;"></div>
+    <div id="playerContainer" style="width:100%;display:flex;gap:0;border-radius:10px;overflow:hidden;background:#000;height:70vh;">
+      <div style="flex:1;min-width:0;position:relative;display:flex;align-items:center;justify-content:center;">
+        <video id="videoPlayer" controls style="width:100%;height:100%;display:none;" preload="metadata"></video>
+        <iframe id="iframePlayer" style="width:100%;height:100%;border:none;display:none;" allowfullscreen allow="autoplay"></iframe>
+        <div id="playerMsg" style="color:var(--text2);font-size:14px;text-align:center;padding:20px;display:none;"></div>
+      </div>
+      <div id="chatPanel" style="display:none;width:320px;flex-shrink:0;border-left:1px solid var(--border);background:#0e0e10;flex-direction:column;">
+        <div style="padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;">
+          <span style="font-family:var(--font-mono);font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;">chat replay</span>
+          <span id="chatCount" style="font-family:var(--font-mono);font-size:10px;color:var(--text3);margin-left:auto;"></span>
+        </div>
+        <div id="chatMessages" style="flex:1;overflow-y:auto;padding:8px 0;scroll-behavior:smooth;"></div>
+      </div>
     </div>
     <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;" id="playerMeta"></div>
   </div>
@@ -1522,6 +1531,10 @@
     <div class="form-group">
       <label class="form-label">video url <span style="color:var(--text3);font-size:10px;text-transform:none;letter-spacing:0">(Google Drive, archive.org, direct link)</span></label>
       <input type="text" class="form-input" id="vodUrl" placeholder="https://archive.org/download/... or Google Drive link">
+    </div>
+    <div class="form-group">
+      <label class="form-label">chat json <span style="color:var(--text3);font-size:10px;text-transform:none;letter-spacing:0">(ссылка на JSON чата с GitHub)</span></label>
+      <input type="text" class="form-input" id="vodChat" placeholder="https://raw.githubusercontent.com/...">
     </div>
     <div class="form-group">
       <label class="form-label">thumbnail <span style="color:var(--text3);font-size:10px;text-transform:none;letter-spacing:0">(необязательно — ссылка на картинку)</span></label>
@@ -1826,6 +1839,7 @@ function resetModal() {
   document.getElementById('uploadProgress').classList.remove('show');
   document.getElementById('progressFill').style.width = '0%';
   document.getElementById('vodUrl').value = '';
+  document.getElementById('vodChat').value = '';
   document.getElementById('vodThumbnail').value = '';
   document.getElementById('vodDurH').value = '';
   document.getElementById('vodDurM').value = '';
@@ -1894,7 +1908,8 @@ async function submitVod() {
     duration: ((parseInt(document.getElementById('vodDurH').value)||0) * 3600) + ((parseInt(document.getElementById('vodDurM').value)||0) * 60) + (parseInt(document.getElementById('vodDurS').value)||0),
     views: 0,
     url: document.getElementById('vodUrl').value.trim(),
-    thumbnail: document.getElementById('vodThumbnail').value.trim()
+    thumbnail: document.getElementById('vodThumbnail').value.trim(),
+    chat_url: document.getElementById('vodChat').value.trim() || null
   };
 
   try {
@@ -1981,6 +1996,63 @@ async function openVod(id) {
   ).join('');
 
   overlay.classList.add('open');
+
+  // ── CHAT REPLAY ──
+  window._chatData = null;
+  window._chatLastTime = -1;
+  const chatPanel = document.getElementById('chatPanel');
+  const chatMessages = document.getElementById('chatMessages');
+  const chatCount = document.getElementById('chatCount');
+  chatPanel.style.display = 'none';
+  chatMessages.innerHTML = '';
+
+  if (vod.chat_url) {
+    fetch(vod.chat_url)
+      .then(r => r.json())
+      .then(json => {
+        // TwitchDownloader format: { comments: [{content_offset_seconds, commenter, message}] }
+        // or array directly
+        let comments = Array.isArray(json) ? json : (json.comments || json.Comments || []);
+        window._chatData = comments.map(c => ({
+          time: c.content_offset_seconds ?? c.time ?? 0,
+          user: c.commenter?.display_name ?? c.user ?? 'user',
+          color: c.message?.user_color ?? c.color ?? '#c084fc',
+          text: (c.message?.body ?? c.text ?? '').trim()
+        })).filter(c => c.text).sort((a,b) => a.time - b.time);
+        chatCount.textContent = window._chatData.length.toLocaleString() + ' msgs';
+        chatPanel.style.display = 'flex';
+
+        // Poll video currentTime every 500ms
+        if (window._chatInterval) clearInterval(window._chatInterval);
+        window._chatLastTime = -1;
+        window._chatInterval = setInterval(() => {
+          const videoEl = document.getElementById('videoPlayer');
+          const t = videoEl.style.display !== 'none' ? videoEl.currentTime : null;
+          if (t === null || window._chatLastTime === Math.floor(t)) return;
+          window._chatLastTime = Math.floor(t);
+
+          // Show messages from t-3s to t
+          const visible = window._chatData.filter(c => c.time >= t - 3 && c.time <= t);
+          if (visible.length === 0) return;
+
+          visible.forEach(c => {
+            const div = document.createElement('div');
+            div.style.cssText = 'padding:4px 12px;font-size:13px;line-height:1.4;font-family:var(--font-sans);';
+            div.innerHTML = `<span style="color:${c.color || '#c084fc'};font-weight:600;font-size:12px;">${escHtml(c.user)}</span> <span style="color:var(--text2);">${escHtml(c.text)}</span>`;
+            chatMessages.appendChild(div);
+          });
+
+          // Keep max 200 messages in DOM
+          while (chatMessages.children.length > 200) chatMessages.removeChild(chatMessages.firstChild);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 500);
+      })
+      .catch(() => { chatPanel.style.display = 'none'; });
+  }
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 function closePlayer() {
@@ -1988,6 +2060,12 @@ function closePlayer() {
   document.getElementById('videoPlayer').pause && document.getElementById('videoPlayer').pause();
   document.getElementById('videoPlayer').src = '';
   document.getElementById('iframePlayer').src = '';
+  // Reset chat
+  const chatPanel = document.getElementById('chatPanel');
+  chatPanel.style.display = 'none';
+  document.getElementById('chatMessages').innerHTML = '';
+  if (window._chatInterval) { clearInterval(window._chatInterval); window._chatInterval = null; }
+  window._chatData = null;
 }
 
 function handlePlayerOverlayClick(e) {
