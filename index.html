@@ -1748,8 +1748,9 @@ function renderGrid() {
  if (filtered.length > visibleCount) {
     const btn = document.createElement('div');
     btn.style.cssText = 'grid-column:1/-1;text-align:center;padding:20px 0';
-    btn.innerHTML = `<button onclick="loadMore()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);font-family:var(--font-mono);font-size:13px;padding:10px 28px;border-radius:10px;cursor:pointer;">load more (${filtered.length - visibleCount} left)</button>`;
+    btn.innerHTML = `<button id="loadMoreBtn" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);font-family:var(--font-mono);font-size:13px;padding:10px 28px;border-radius:10px;cursor:pointer;">load more (${filtered.length - visibleCount} left)</button>`;
     grid.appendChild(btn);
+    document.getElementById('loadMoreBtn').addEventListener('click', loadMore);
   }
  function loadMore() {
   visibleCount += 3;
