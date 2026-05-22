@@ -1717,7 +1717,7 @@
       <div class="hero-stat-box" id="twitchStatusBox" style="cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;" onclick="window.open('https://twitch.tv/cutierover','_blank')">
         <div style="display:flex;align-items:center;gap:8px;">
           <span id="liveIndicator" style="width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0;display:block"></span>
-          <div class="stat-label" style="margin:0" id="liveLabel">checking…</div>
+          <div class="stat-label" style="margin:0" id="liveLabel">offline</div>
         </div>
         <div>
           <div class="stat-num" id="statFollowers">—</div>
@@ -2669,10 +2669,15 @@ async function fetchTwitchData() {
         if (viewersEl) viewersEl.textContent = '—';
       }
     }
-  } catch(e) {
-    document.getElementById('liveLabel').textContent = 'twitch';
+} catch(e) {
+    const dot = document.getElementById('liveIndicator');
+    dot.style.background = 'var(--text3)';
+    dot.style.boxShadow = 'none';
+    dot.style.animation = 'none';
+    document.getElementById('liveLabel').textContent = 'offline';
+    document.getElementById('liveLabel').style.color = 'var(--text3)';
     document.getElementById('statFollowers').textContent = '220k+';
-  }
+}
 }
 
 async function init() {
