@@ -1542,31 +1542,7 @@
     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
   </svg>
 </button>
- 
-<!-- Модальное окно -->
-<div class="support-overlay" id="supportOverlay" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="support-modal">
-    <button class="support-modal-close" onclick="document.getElementById('supportOverlay').classList.remove('open')">×</button>
-    <p class="support-modal-title">поддержать ♡</p>
-    <p class="support-modal-sub">выбери удобный способ</p>
- 
-    <a class="support-da-btn" href="https://www.donationalerts.com/r/voicecoretm" target="_blank">
-      donation alerts
-    </a>
- 
-    <div class="support-method">
-      <div class="support-method-label">USDT TRC-20</div>
-      <div class="support-method-row">
-        <span class="support-method-val">TS9YcNXxWcJ5tMU8KRm2t8GvvHdv1FiorG</span>
-        <button class="support-copy-btn" onclick="
-          navigator.clipboard.writeText('TS9YcNXxWcJ5tMU8KRm2t8GvvHdv1FiorG');
-          this.textContent='скопировано ✓';
-          setTimeout(()=>this.textContent='копировать',2000)
-        ">копировать</button>
-      </div>
-    </div>
-  </div>
-</div>
+
       </div>
     </div>
   </div>
@@ -2462,5 +2438,29 @@ init();
  
   </div>
 </section>
+<!-- Модальное окно поддержки -->
+<div class="support-overlay" id="supportOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="support-modal">
+    <button class="support-modal-close" onclick="document.getElementById('supportOverlay').classList.remove('open')">×</button>
+    <p class="support-modal-title">поддержать ♡</p>
+    <p class="support-modal-sub">выбери удобный способ</p>
+
+    <a class="support-da-btn" href="https://www.donationalerts.com/r/voicecoretm" target="_blank">
+      donation alerts
+    </a>
+
+    <div class="support-method">
+      <div class="support-method-label">USDT TRC-20</div>
+      <div class="support-method-row">
+        <span class="support-method-val">TS9YcNXxWcJ5tMU8KRm2t8GvvHdv1FiorG</span>
+        <button class="support-copy-btn" onclick="
+          navigator.clipboard.writeText('TS9YcNXxWcJ5tMU8KRm2t8GvvHdv1FiorG');
+          this.textContent='скопировано ✓';
+          setTimeout(()=>this.textContent='копировать',2000)
+        ">копировать</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
