@@ -2662,20 +2662,21 @@ async function fetchTwitchData() {
         label.style.color = 'var(--live)';
         const v = ch.stream.viewers;
         if (viewersEl) viewersEl.textContent = v >= 1000 ? (v / 1000).toFixed(1) + 'k' : v;
-      } else {
-        dot.style.background = 'var(--text3)';
-        label.textContent = 'offline';
-        label.style.color = 'var(--text3)';
+} else {
+    dot.style.background = '#f87171';
+    dot.style.boxShadow = '0 0 6px #f87171';
+    label.textContent = 'offline';
+    label.style.color = '#f87171';
         if (viewersEl) viewersEl.textContent = '—';
       }
     }
 } catch(e) {
     const dot = document.getElementById('liveIndicator');
-    dot.style.background = 'var(--text3)';
-    dot.style.boxShadow = 'none';
+    dot.style.background = '#f87171';
+    dot.style.boxShadow = '0 0 6px #f87171';
     dot.style.animation = 'none';
     document.getElementById('liveLabel').textContent = 'offline';
-    document.getElementById('liveLabel').style.color = 'var(--text3)';
+    document.getElementById('liveLabel').style.color = '#f87171';
     document.getElementById('statFollowers').textContent = '220k+';
 }
 }
