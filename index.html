@@ -86,6 +86,7 @@
     margin: 0 auto;
     height: 64px;
     display: flex;
+    position: relative;
     align-items: center;
     justify-content: space-between;
   }
@@ -1113,6 +1114,9 @@
   header { width: 100%; }
   .header-inner { width: 100%; padding: 0 16px; gap: 8px; }
   nav { display: none; }
+  .search-bar input { display: none; }
+  .search-bar.expanded { position: absolute; left: 16px; right: 16px; top: 12px; z-index: 100; background: var(--bg3); border-color: var(--accent); }
+  .search-bar.expanded input { display: block; width: 100%; }
   .header-right { gap: 6px; }
   .search-bar { flex: 1; min-width: 0; }
   .search-bar input { width: 100%; font-size: 12px; }
@@ -1648,10 +1652,10 @@
     </nav>
 
       <div class="header-right">
-        <div class="search-bar">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          <input type="text" id="searchInput" placeholder="search vods…" oninput="filterCards()">
-        </div>
+        <div class="search-bar" onclick="this.classList.toggle('expanded')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="searchInput" placeholder="search vods…" oninput="filterCards()">
+      </div>
         <button class="upload-btn" id="uploadBtn" onclick="openModal()" style="display:none">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           upload recording
