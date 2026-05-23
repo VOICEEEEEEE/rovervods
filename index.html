@@ -2678,6 +2678,16 @@ if (isLive) {
   dot.style.animation = 'blink 1.2s infinite';
   label.textContent = 'live now';
   label.style.color = 'var(--live)';
+  try {
+    const viewersRes = await fetch('https://decapi.me/twitch/viewercount/cutierover');
+    const viewersText = await viewersRes.text();
+    const v = parseInt(viewersText.trim());
+    if (viewersEl && !isNaN(v)) {
+      viewersEl.textContent = v >= 1000 ? (v / 1000).toFixed(1) + 'k' : v;
+    }
+  } catch(e) {
+    if (viewersEl) viewersEl.textContent = '—';
+  }
 } else {
   dot.style.background = '#f87171';
   dot.style.boxShadow = '0 0 6px #f87171';
