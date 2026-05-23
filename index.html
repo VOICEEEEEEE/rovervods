@@ -336,7 +336,7 @@
 
   @media (max-width: 900px) {
     .hero-layout { grid-template-columns: 1fr; }
-    .hero-right { display: none; }
+    .hero-right { display: none !important; }
   }
 
   .avatar-ring {
@@ -1184,6 +1184,34 @@
 
     /* Footer */
     footer { flex-direction: column; gap: 8px; text-align: center; padding: 20px 16px; }
+   /* Хедер — на всю ширину */
+header { width: 100%; }
+.header-inner { width: 100%; box-sizing: border-box; }
+.search-bar { flex: 1; min-width: 0; }
+.search-bar input { width: 100%; }
+
+/* Кнопки — одинаковые, в ряд, не обрезаются */
+.hero-buttons { flex-wrap: nowrap; width: 100%; }
+.hero-buttons .twitch-link {
+  flex: 1;
+  justify-content: center;
+  text-align: center;
+  font-size: 11px;
+  padding: 10px 8px;
+  white-space: nowrap;
+}
+
+/* Карточки VOD — на всю ширину */
+#videoGrid {
+  grid-template-columns: 1fr !important;
+  padding: 0 16px 16px !important;
+}
+
+/* Avatar — меньше на мобилке */
+.avatar { width: 100px; height: 100px; }
+
+/* Hero layout — убираем лишний отступ */
+.hero { padding: 24px 16px 24px; }
   }
 
   .hero-buttons {
