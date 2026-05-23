@@ -1134,13 +1134,13 @@
   .hero-info { min-width: 0; overflow: hidden; }
 
   /* Кнопки — одинаковые, в ряд */
-  .hero-buttons {
-    display: flex !important;
-    flex-wrap: nowrap;
-    width: 100%;
-    gap: 8px;
-    padding-top: 16px !important;
-  }
+.hero-buttons {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  width: 100%;
+  gap: 8px;
+  padding-top: 16px !important;
+}
   .hero-buttons .twitch-link {
     flex: 1;
     justify-content: center;
@@ -1626,7 +1626,6 @@
   white-space: nowrap;
 }
 .support-copy-btn:hover { background: rgba(255,255,255,0.07); }
- * { outline: 1px solid red; }
 </style>
 </head>
 <body>
