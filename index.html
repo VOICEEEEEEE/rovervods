@@ -2651,7 +2651,7 @@ async function fetchTwitchData() {
   try {
     // Используем ivr.fi — публичный unofficial Twitch API proxy
 const [userRes] = await Promise.all([
-  fetch('https://api.ivr.fi/v2/twitch/user?login=voicecoretm')
+  fetch('https://api.ivr.fi/v2/twitch/user?login=cutierover')
 ]);
 
 if (userRes.ok) {
@@ -2664,7 +2664,7 @@ if (userRes.ok) {
   }
 }
 
-const streamRes = await fetch('https://decapi.me/twitch/uptime/voicecoretm');
+const streamRes = await fetch('https://decapi.me/twitch/uptime/cutierover');
 const streamText = await streamRes.text();
 const isLive = !streamText.includes('offline') && !streamText.includes('error');
 
@@ -2679,7 +2679,7 @@ if (isLive) {
   label.textContent = 'live now';
   label.style.color = 'var(--live)';
   try {
-    const viewersRes = await fetch('https://decapi.me/twitch/viewercount/voicecoretm');
+    const viewersRes = await fetch('https://decapi.me/twitch/viewercount/cutierover');
     const viewersText = await viewersRes.text();
     const v = parseInt(viewersText.trim());
     if (viewersEl && !isNaN(v)) {
