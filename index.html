@@ -2632,44 +2632,42 @@ async function logoutAdmin() {
 async function fetchTwitchData() {
   try {
     // Используем ivr.fi — публичный unofficial Twitch API proxy
-    const [userRes, streamRes] = await Promise.all([
-      fetch('https://api.ivr.fi/v2/twitch/user?login=cutierover'),
-      fetch('https://api.ivr.fi/v2/twitch/channel?login=cutierover')
-    ]);
+const [userRes] = await Promise.all([
+  fetch('https://api.ivr.fi/v2/twitch/user?login=cutierover')
+]);
 
-    if (userRes.ok) {
-      const users = await userRes.json();
-      const user = Array.isArray(users) ? users[0] : users;
-      if (user && user.followers !== undefined) {
-        const f = user.followers;
-        document.getElementById('statFollowers').textContent =
-          f >= 1000 ? (f / 1000).toFixed(1) + 'k' : f;
-      }
-    }
+if (userRes.ok) {
+  const users = await userRes.json();
+  const user = Array.isArray(users) ? users[0] : users;
+  if (user && user.followers !== undefined) {
+    const f = user.followers;
+    document.getElementById('statFollowers').textContent =
+      f >= 1000 ? (f / 1000).toFixed(1) + 'k' : f;
+  }
+}
 
-    if (streamRes.ok) {
-      const channels = await streamRes.json();
-      const ch = Array.isArray(channels) ? channels[0] : channels;
-      const isLive = ch && ch.stream !== null && ch.stream !== undefined;
-      const dot = document.getElementById('liveIndicator');
-      const label = document.getElementById('liveLabel');
-      const viewersEl = document.getElementById('statViewers');
-      if (isLive) {
-        dot.style.background = 'var(--live)';
-        dot.style.boxShadow = '0 0 6px var(--live)';
-        dot.style.animation = 'blink 1.2s infinite';
-        label.textContent = 'live now';
-        label.style.color = 'var(--live)';
-        const v = ch.stream.viewers;
-        if (viewersEl) viewersEl.textContent = v >= 1000 ? (v / 1000).toFixed(1) + 'k' : v;
+const streamRes = await fetch('https://decapi.me/twitch/uptime/cutierover');
+const streamText = await streamRes.text();
+const isLive = !streamText.includes('offline') && !streamText.includes('error');
+
+const dot = document.getElementById('liveIndicator');
+const label = document.getElementById('liveLabel');
+const viewersEl = document.getElementById('statViewers');
+
+if (isLive) {
+  dot.style.background = 'var(--live)';
+  dot.style.boxShadow = '0 0 6px var(--live)';
+  dot.style.animation = 'blink 1.2s infinite';
+  label.textContent = 'live now';
+  label.style.color = 'var(--live)';
 } else {
-    dot.style.background = '#f87171';
-    dot.style.boxShadow = '0 0 6px #f87171';
-    label.textContent = 'offline';
-    label.style.color = '#f87171';
-        if (viewersEl) viewersEl.textContent = '—';
-      }
-    }
+  dot.style.background = '#f87171';
+  dot.style.boxShadow = '0 0 6px #f87171';
+  dot.style.animation = 'none';
+  label.textContent = 'offline';
+  label.style.color = '#f87171';
+  if (viewersEl) viewersEl.textContent = '—';
+}
 } catch(e) {
     const dot = document.getElementById('liveIndicator');
     dot.style.background = '#f87171';
