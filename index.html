@@ -496,6 +496,21 @@
     gap: 12px;
     flex-wrap: wrap;
   }
+  .filters-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .filters-left .filter-label {
+    margin-right: 4px;
+  }
+  .filters-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
 
   .filter-label {
     font-size: 12px;
@@ -1114,18 +1129,24 @@
 
   .empty-sub { font-size: 14px; color: var(--text3); }
 
+  
+  /* Search desktop/mobile visibility */
+  .search-desktop { display: flex; align-items: center; }
+  .search-mobile { display: none; width: 100%; }
+  .search-mobile .search-bar { width: 100%; }
+  .search-mobile .search-bar input { width: 100%; display: block !important; }
+
   /* Responsive */
 @media (max-width: 768px) {
   /* Header */
   header { width: 100%; }
   .header-inner { width: 100%; padding: 0 16px; gap: 8px; }
   nav { display: none; }
-  .search-bar input { display: none; }
-  .search-bar.expanded { position: absolute; left: 16px; right: 16px; top: 12px; z-index: 100; background: var(--bg3); border-color: var(--accent); }
-  .search-bar.expanded input { display: block; width: 100%; }
+  .search-desktop { display: none !important; }
+  .search-mobile { display: block !important; }
   .header-right { gap: 6px; }
   .search-bar { flex: 1; min-width: 0; }
-  .search-bar input { width: 100%; font-size: 12px; }
+  .search-bar input { width: 100%; font-size: 12px; display: block !important; }
   .upload-btn { font-size: 11px; padding: 6px 10px; }
   .admin-badge { font-size: 10px; padding: 4px 8px; }
   #loginBtn { font-size: 11px; padding: 6px 10px; }
@@ -1161,11 +1182,16 @@
   }
 
   /* Filters */
-  .filters-bar { padding: 12px 16px; gap: 8px; flex-wrap: wrap; }
+  .filters-bar { padding: 12px 16px; gap: 8px; flex-wrap: wrap; align-items: flex-start; }
+  .filters-left { flex-wrap: wrap; gap: 6px; flex: 1; min-width: 0; }
+  .filters-right { flex-shrink: 0; align-self: flex-start; margin-top: 22px; }
   .filter-chips { gap: 6px; flex-wrap: wrap; }
-  .chip { font-size: 11px; padding: 5px 12px; }
-  .filter-label { font-size: 10px; }
-  select { font-size: 12px; padding: 5px 10px; }
+  .chip { font-size: 11px; padding: 5px 10px; }
+  .filter-label { font-size: 10px; width: 100%; margin-bottom: 2px; }
+  .filter-sep { display: none; }
+  .sort-select { font-size: 12px; padding: 5px 10px; }
+  .search-mobile { width: 100%; margin-top: 4px; }
+  .search-mobile .search-bar { width: 100%; }
 
   /* Grid — одна колонка на всю ширину */
   #videoGrid {
@@ -2465,6 +2491,13 @@
     90% { transform: translate(-2%, -1%); }
   }
 
+  
+  /* Search desktop/mobile visibility */
+  .search-desktop { display: flex; align-items: center; }
+  .search-mobile { display: none; width: 100%; }
+  .search-mobile .search-bar { width: 100%; }
+  .search-mobile .search-bar input { width: 100%; display: block !important; }
+
   /* Responsive */
   @media (max-width: 768px) {
     .orb { display: none; }
@@ -2513,9 +2546,11 @@
     </nav>
 
       <div class="header-right">
-        <div class="search-bar" onclick="this.classList.toggle('expanded');this.querySelector('input').focus()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input type="text" id="searchInput" placeholder="search vods…" oninput="filterCards()">
+        <div class="search-desktop">
+        <div class="search-bar">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" id="searchInput" placeholder="search vods…" oninput="filterCards()">
+        </div>
       </div>
         <button class="upload-btn" id="uploadBtn" onclick="openModal()" style="display:none">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -2617,20 +2652,30 @@
 
 <!-- FILTERS -->
 <div class="filters-bar">
-  <span class="filter-label">filter</span>
-  <div class="filter-chips">
-    <span class="chip active" onclick="filterByTag('all', this)">all</span>
-    <span class="chip" onclick="filterByTag('gaming', this)">gaming</span>
-    <span class="chip" onclick="filterByTag('film', this)">film</span>
-    <span class="chip" onclick="filterByTag('irl', this)">irl</span>
-    <span class="chip" onclick="filterByTag('just chatting', this)">just chatting</span>
+  <div class="filters-left">
+    <span class="filter-label">filter</span>
+    <div class="filter-chips">
+      <span class="chip active" onclick="filterByTag('all', this)">all</span>
+      <span class="chip" onclick="filterByTag('gaming', this)">gaming</span>
+      <span class="chip" onclick="filterByTag('film', this)">film</span>
+      <span class="chip" onclick="filterByTag('irl', this)">irl</span>
+      <span class="chip" onclick="filterByTag('just chatting', this)">just chatting</span>
+    </div>
+    <div class="search-mobile">
+      <div class="search-bar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="searchInputMobile" placeholder="search vods…" oninput="filterCards()">
+      </div>
+    </div>
   </div>
-  <div class="filter-sep"></div>
-  <select class="sort-select" onchange="sortCards(this.value)">
-    <option value="newest">newest first</option>
-    <option value="oldest">oldest first</option>
-    <option value="views">most viewed</option>
-  </select>
+  <div class="filters-right">
+    <div class="filter-sep"></div>
+    <select class="sort-select" onchange="sortCards(this.value)">
+      <option value="newest">newest first</option>
+      <option value="oldest">oldest first</option>
+      <option value="views">most viewed</option>
+    </select>
+  </div>
 </div>
 
 <!-- MAIN GRID -->
@@ -3144,7 +3189,9 @@ function sortCards(val) {
 
 function filterCards() {
   visibleCount = 3;
-  searchQuery = document.getElementById('searchInput').value;
+  const desktopInput = document.getElementById('searchInput');
+  const mobileInput = document.getElementById('searchInputMobile');
+  searchQuery = (desktopInput ? desktopInput.value : '') || (mobileInput ? mobileInput.value : '');
   renderGrid();
 }
 
