@@ -2901,6 +2901,10 @@
           <div class="progress-fill" id="progressFill"></div>
         </div>
       </div>
+      <label class="auto-publish-label" style="display:flex;align-items:center;gap:8px;margin-top:10px;cursor:pointer;">
+        <input type="checkbox" id="autoPublish" checked style="accent-color:var(--accent);width:14px;height:14px;">
+        <span style="font-size:12px;color:var(--text2);">auto-publish after upload</span>
+      </label>
     </div>
 
     <div class="form-group" style="margin-top:8px;">
@@ -3419,10 +3423,15 @@ async function startArchiveUpload(file) {
 
     // Show success in drop zone
     document.getElementById('dropText').innerHTML = '<strong>uploaded!</strong>';
-    document.getElementById('dropSub').textContent = 'link copied to field below';
+    document.getElementById('dropSub').textContent = 'publishing…';
     document.getElementById('dropZone').style.borderColor = 'var(--live)';
     document.getElementById('dropIcon').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
     document.getElementById('dropIcon').style.color = 'var(--live)';
+
+    // Auto-publish if enabled
+    if (document.getElementById('autoPublish').checked) {
+      setTimeout(() => submitVod(), 1500);
+    }
 
   } catch(e) {
     clearInterval(iv);
