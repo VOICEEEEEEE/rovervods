@@ -869,14 +869,20 @@
     background: rgba(0,0,0,0.75);
     backdrop-filter: blur(8px);
     z-index: 100;
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .modal-overlay.open {
-    display: flex;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
   }
 
   .modal {
@@ -1227,11 +1233,13 @@
     align-items: center;
     justify-content: center;
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.25s;
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .auth-modal-overlay.open {
     opacity: 1;
+    visibility: visible;
     pointer-events: all;
   }
   .auth-modal {
@@ -1524,16 +1532,23 @@
 .support-btn svg { width: 22px; height: 22px; fill: none; stroke: #d4537e; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
  
 .support-overlay {
-  display: none;
+  display: flex;
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
   z-index: 9999;
   align-items: center;
   justify-content: center;
-  pointer-events: auto
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.support-overlay.open { display: flex; }
+.support-overlay.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
+}
  
 .support-modal {
   background: var(--bg2, #111118);
@@ -1548,16 +1563,33 @@
  
 .support-modal-close {
   position: absolute;
-  top: 12px; right: 12px;
-  background: none;
-  border: none;
-  cursor: pointer;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.12);
   color: var(--text2, #9c98b4);
-  font-size: 20px;
+  cursor: pointer;
+  font-size: 18px;
   line-height: 1;
-  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
 }
-.support-modal-close:hover { color: var(--text, #f0eef8); }
+.support-modal-close:hover {
+  border-color: var(--pink);
+  background: var(--pink-dim);
+  color: var(--pink);
+  transform: rotate(90deg) scale(1.1);
+  box-shadow: 0 0 0 3px rgba(244,114,182,0.12), 0 0 20px rgba(244,114,182,0.25);
+}
+.support-modal-close:active {
+  transform: rotate(90deg) scale(0.95);
+}
  
 .support-modal-title {
   font-size: 16px;
@@ -2454,6 +2486,7 @@
 
 </style>
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 <canvas id="particleCanvas" style="position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.6;"></canvas>
@@ -2723,7 +2756,7 @@
 <!-- VIDEO PLAYER MODAL -->
 <div class="modal-overlay" id="playerOverlay" onclick="handlePlayerOverlayClick(event)">
   <div class="modal" style="max-width:1400px;padding:20px;width:95vw;">
-    <button class="modal-close" onclick="closePlayer()">
+    <button class="modal-close player-x" onclick="closePlayer()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
     <h2 class="modal-title" id="playerTitle" style="margin-bottom:16px;font-size:18px;padding-right:32px;"></h2>
@@ -3125,7 +3158,9 @@ function openModal() {
 
 function closeModal() {
   document.getElementById('modalOverlay').classList.remove('open');
-  resetModal();
+  setTimeout(function() {
+    resetModal();
+  }, 350);
 }
 
 function handleOverlayClick(e) {
@@ -3361,15 +3396,16 @@ function escHtml(s) {
 
 function closePlayer() {
   document.getElementById('playerOverlay').classList.remove('open');
-  document.getElementById('videoPlayer').pause && document.getElementById('videoPlayer').pause();
-  document.getElementById('videoPlayer').src = '';
-  document.getElementById('iframePlayer').src = '';
-  // Reset chat
-  const chatPanel = document.getElementById('chatPanel');
-  chatPanel.style.display = 'none';
-  document.getElementById('chatMessages').innerHTML = '';
-  if (window._chatInterval) { clearInterval(window._chatInterval); window._chatInterval = null; }
-  window._chatData = null;
+  setTimeout(function() {
+    document.getElementById('videoPlayer').pause && document.getElementById('videoPlayer').pause();
+    document.getElementById('videoPlayer').src = '';
+    document.getElementById('iframePlayer').src = '';
+    const chatPanel = document.getElementById('chatPanel');
+    chatPanel.style.display = 'none';
+    document.getElementById('chatMessages').innerHTML = '';
+    if (window._chatInterval) { clearInterval(window._chatInterval); window._chatInterval = null; }
+    window._chatData = null;
+  }, 350);
 }
 
 function handlePlayerOverlayClick(e) {
@@ -3509,6 +3545,15 @@ function openAuthModal() {
 
 function closeAuthModal() {
   document.getElementById('authOverlay').classList.remove('open');
+  setTimeout(function() {
+    document.getElementById('authError').textContent = '';
+    document.getElementById('authEmail').value = '';
+    document.getElementById('authPassword').value = '';
+  }, 350);
+}
+
+function closeSupport() {
+  document.getElementById('supportOverlay').classList.remove('open');
 }
 
 async function submitAuth() {
@@ -3625,27 +3670,6 @@ async function init() {
 init();
 
 
-// === ПЛАВНЫЕ АНИМАЦИИ ЗАКРЫТИЯ (добавлено поверх существующего кода) ===
-// Переопределяем close-функции для плавной анимации перед закрытием
-
-const _origCloseModal = closeModal;
-closeModal = function() {
-  document.getElementById('modalOverlay').classList.remove('open');
-  setTimeout(_origCloseModal, 350);
-};
-
-const _origCloseAuth = closeAuthModal;
-closeAuthModal = function() {
-  document.getElementById('authOverlay').classList.remove('open');
-  setTimeout(_origCloseAuth, 350);
-};
-
-const _origClosePlayer = closePlayer;
-closePlayer = function() {
-  document.getElementById('playerOverlay').classList.remove('open');
-  setTimeout(_origClosePlayer, 350);
-};
-
 // Плавный скролл для якорных ссылок
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function(e) {
@@ -3662,7 +3686,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 <!-- Модальное окно поддержки -->
 <div class="support-overlay" id="supportOverlay" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="support-modal">
-    <button class="support-modal-close" onclick="document.getElementById('supportOverlay').classList.remove('open')">×</button>
+    <button class="support-modal-close" onclick="closeSupport()">×</button>
     <p class="support-modal-title">Поддержать создателя сайта ♡</p>
     <p class="support-modal-sub">Выбери удобный способ</p>
 
