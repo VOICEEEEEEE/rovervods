@@ -2317,9 +2317,10 @@ function resetModal() {
   document.getElementById('vodDurM').value = '';
   document.getElementById('vodDurS').value = '';
   selectedFile = null;
-  document.querySelector('#modalOverlay .modal-title').textContent = 'upload recording';
-  document.querySelector('#modalOverlay .form-submit').textContent = 'publish recording';
-  document.querySelector('#modalOverlay .form-submit').onclick = submitVod;
+const mt = document.querySelector('#modalOverlay .modal-title');
+const ms = document.querySelector('#modalOverlay .form-submit');
+if (mt) mt.textContent = 'upload recording';
+if (ms) { ms.textContent = 'publish recording'; ms.onclick = submitVod; }
   window._editingVodId = null;
 }
 
@@ -2565,9 +2566,10 @@ function editVod(id) {
   document.getElementById('vodChat').value = vod.chat_url || '';
   document.getElementById('vodThumbnail').value = vod.thumbnail || '';
 
-  document.querySelector('#modalOverlay .modal-title').textContent = 'edit recording';
-  document.querySelector('#modalOverlay .form-submit').textContent = 'save changes';
-  document.querySelector('#modalOverlay .form-submit').onclick = saveEditVod;
+const mt2 = document.querySelector('#modalOverlay .modal-title');
+const ms2 = document.querySelector('#modalOverlay .form-submit');
+if (mt2) mt2.textContent = 'edit recording';
+if (ms2) { ms2.textContent = 'save changes'; ms2.onclick = saveEditVod; }
   document.getElementById('modalOverlay').classList.add('open');
 }
 
