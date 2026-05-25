@@ -2520,6 +2520,7 @@
 </style>
 <base target="_blank">
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 <canvas id="particleCanvas" style="position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.6;"></canvas>
@@ -3451,7 +3452,12 @@ async function submitVod() {
   const fill = document.getElementById('progressFill');
   const pct = document.getElementById('progressPct');
   const txt = document.getElementById('progressText');
-  progress.classList.add('show');
+
+  // Only show progress if we were uploading a file
+  const wasUploading = selectedFile && archiveUrl;
+  if (wasUploading) {
+    progress.classList.add('show');
+  }
 
   // Анимация прогресса
   let p = 0;
@@ -3471,7 +3477,7 @@ async function submitVod() {
     tags: document.getElementById('vodTags').value,
     duration: ((parseInt(document.getElementById('vodDurH').value)||0) * 3600) + ((parseInt(document.getElementById('vodDurM').value)||0) * 60) + (parseInt(document.getElementById('vodDurS').value)||0),
     views: 0,
-    url: archiveUrl || document.getElementById('vodUrl').value.trim(),
+    url: archiveUrl || document.getElementById('vodUrl').value.trim() || null,
     thumbnail: document.getElementById('vodThumbnail').value.trim(),
     chat_url: document.getElementById('vodChat').value.trim() || null
   };
@@ -3672,7 +3678,7 @@ async function saveEditVod() {
     category: document.getElementById('vodCategory').value,
     tags: document.getElementById('vodTags').value,
     duration: ((parseInt(document.getElementById('vodDurH').value)||0) * 3600) + ((parseInt(document.getElementById('vodDurM').value)||0) * 60) + (parseInt(document.getElementById('vodDurS').value)||0),
-    url: archiveUrl || document.getElementById('vodUrl').value.trim(),
+    url: archiveUrl || document.getElementById('vodUrl').value.trim() || null,
     thumbnail: document.getElementById('vodThumbnail').value.trim(),
     chat_url: document.getElementById('vodChat').value.trim() || null
   };
@@ -3712,6 +3718,8 @@ async function deleteVod(id) {
 // ─── AUTH ─────────────────────────────────────────────────
 let isAdmin = false;
 let supabaseSession = null;
+let archiveUrl = null;
+let selectedFile = null;
 
 async function signIn(email, password) {
   const res = await fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
